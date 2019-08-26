@@ -10,7 +10,7 @@ pub struct Alignment<T> {
     score: T,
 }
 
-impl<T> Alignment<T> {
+impl<T> Alignment<T> where T: Clone {
     pub fn new(origin: Cursor, steps: Vec<StepMask>, score: T) -> Self {
         Self {
             origin,
@@ -23,8 +23,8 @@ impl<T> Alignment<T> {
         &self.origin
     }
 
-    pub fn score(&self) -> &T {
-        &self.score
+    pub fn score(&self) -> T {
+        self.score.clone()
     }
 
     pub fn len(&self) -> usize {
@@ -80,6 +80,6 @@ mod tests {
 
     #[test]
     fn score_works() {
-        assert_eq!(alignment().score(), &score());
+        assert_eq!(alignment().score(), score());
     }
 }

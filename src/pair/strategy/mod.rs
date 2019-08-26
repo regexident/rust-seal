@@ -1,11 +1,11 @@
 use std::ops::RangeInclusive;
 
-use num_traits::{NumAssign, One, Signed, Zero};
+use num_traits::{NumAssign, Signed, Zero};
 
 use pair::{
-    matrix::{Matrix, MatrixCell},
     alignments::{Alignment, Alignments},
     cursor::Cursor,
+    matrix::{Matrix, MatrixCell},
     penalty::Penalty,
     step_mask::StepMask,
 };
@@ -27,14 +27,12 @@ pub trait Strategy<T> {
         rhs: (Self::Score, Cursor),
     ) -> (Self::Score, Cursor);
 
-    // fn alignment<M, E, F>(&self, x: &[T], y: &[T], f: F) -> Result<Option<Alignment<T>>, E>
-    // where
-    //     M: Matrix<Score = Self::Score, Error = E>,
-    //     F: Fn(&T, &T) -> Self::Score,
-    // {
-    //     Self::<T>::alignments(self, x, y, f).map(|set| set.alignment())
-    //     // self.alignments(x, y, f).map(|set| set.alignment())
-    // }
+    fn alignment<F>(&self, x: &[T], y: &[T], f: F) -> Option<Alignment<Self::Score>>
+    where
+        F: Fn(&T, &T) -> Self::Score,
+    {
+        self.alignments(x, y, f).alignment()
+    }
 
     fn alignments<F>(&self, x: &[T], y: &[T], f: F) -> Alignments<Self::Score>
     where
@@ -113,13 +111,12 @@ pub trait Strategy<T> {
         Alignments::new(matrix, cursor)
     }
 
-    // fn distance<M, E, F>(
-    //     &self,
-    //     x: &[T],
-    //     y: &[T],
-    //     f: F,
-    // ) -> Self::Score
-    // where
-    //     M: Matrix<Score = Self::Score, Error = E>,
-    //     F: Fn(&T, &T) -> Self::Score;
+    fn distance<F>(&self, x: &[T], y: &[T], f: F) -> Option<Self::Score>
+    where
+        F: Fn(&T, &T) -> Self::Score,
+    {
+        self.alignments(x, y, f)
+            .alignment()
+            .map(|alignment| alignment.score())
+    }
 }
