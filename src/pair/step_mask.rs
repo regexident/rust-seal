@@ -24,20 +24,25 @@ impl StepMask {
 
     pub fn string(&self) -> String {
         let mut string = String::default();
+
+        if *self == StepMask::STOP {
+            return "!!!".to_string();
+        }
+
         string.push_str(if self.contains(StepMask::INSERT) {
-            "I"
+            "↑" // "I"
         } else {
-            "-"
+            ""
         });
         string.push_str(if self.contains(StepMask::ALIGN) {
-            "A"
+            "↖︎" // "A"
         } else {
-            "-"
+            ""
         });
         string.push_str(if self.contains(StepMask::DELETE) {
-            "D"
+            "←" // "D"
         } else {
-            "-"
+            ""
         });
         string
     }

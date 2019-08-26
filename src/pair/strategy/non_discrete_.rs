@@ -5,7 +5,7 @@ use pair::cursor::Cursor;
 use pair::step_mask::StepMask;
 use pair::strategy::Strategy as StrategyTrait;
 use pair::{
-    alignment_matrix::{AlignmentMatrix, AlignmentMatrixCell},
+    matrix::{Matrix, MatrixCell},
     alignment_set::AlignmentSet,
 };
 
@@ -16,18 +16,25 @@ pub enum Kernel {
 
 #[derive(Clone, Debug)]
 pub struct Strategy {
+    equal: f64,
+    unequal: f64,
+    threshold: f64,
     bounds: RangeInclusive<f64>,
 }
 
 impl Strategy {
-    pub fn new(bounds: RangeInclusive<f64>) -> Self {
-        Self { bounds }
+    pub fn new(equal: f64, unequal: f64, threshold: f64, bounds: RangeInclusive<f64>) -> Self {
+        Self {
+            equal,
+            unequal,
+            threshold,
+            bounds,
+        }
     }
 
     // Dynamic time warping algorithm calculating optimal global alignment:
     pub fn dynamic_time_warping() -> Self {
-        let max = MAX;
-        Self::new(0.0..=max)
+        Self::new(1.0, 1.0, 0.0, 0.0..=MAX)
     }
 
     fn total_score(&self, score: f64) -> f64 {
@@ -45,12 +52,18 @@ impl Strategy {
         lhs: &f64,
         rhs: &f64,
         previous_scores: [f64; 3],
-    ) -> AlignmentMatrixCell<f64> {
+    ) -> MatrixCell<f64> {
         let [insert, align, delete] = previous_scores;
-        let mut cell = AlignmentMatrixCell::from_scores(align, delete, insert);
+        let mut cell = MatrixCell::from_scores(align, delete, insert);
         let squared_distance = (lhs - rhs) * (lhs - rhs);
         let distance = squared_distance.sqrt();
-        cell.score = distance + self.total_score(cell.score.clone());
+        let cost = distance - self.threshold;
+        let score = if cost >= 0.0 {
+            (self.equal.clone() * cost) + cell.score.clone()
+        } else {
+            (self.unequal.clone() * cost) + cell.score.clone()
+        };
+        cell.score = self.total_score(score);
 
         cell
     }
@@ -61,7 +74,7 @@ impl StrategyTrait<f64> for Strategy {
 
     fn alignment_set<M, E>(&self, x: &[f64], y: &[f64]) -> Result<AlignmentSet<f64, M>, E>
     where
-        M: AlignmentMatrix<Score = Self::Score, Error = E>,
+        M: Matrix<Score = Self::Score, Error = E>,
         M: ::std::fmt::Debug,
     {
         let width = x.len() + 1;
@@ -72,12 +85,12 @@ impl StrategyTrait<f64> for Strategy {
         for y in 1..height {
             let score = INFINITY;
             let mask = StepMask::INSERT;
-            *matrix.cell_mut(&Cursor::new(0, y)) = AlignmentMatrixCell::new(score, mask);
+            *matrix.cell_mut(&Cursor::new(0, y)) = MatrixCell::new(score, mask);
         }
         for x in 1..width {
             let score = INFINITY;
             let mask = StepMask::DELETE;
-            *matrix.cell_mut(&Cursor::new(x, 0)) = AlignmentMatrixCell::new(score, mask);
+            *matrix.cell_mut(&Cursor::new(x, 0)) = MatrixCell::new(score, mask);
         }
         let mut row: Vec<Self::Score> = (0..width).map(|_| INFINITY).collect();
 

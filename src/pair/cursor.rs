@@ -13,30 +13,34 @@ impl Cursor {
         Self { x, y }
     }
 
-    pub fn apply_forwards_step(&mut self, step: StepMask) {
-        self.apply_step(step, true)
+    pub fn forwards_step(&self, step: StepMask) -> Option<Cursor> {
+        self.step(step, true)
     }
 
-    pub fn apply_backwards_step(&mut self, step: StepMask) {
-        self.apply_step(step, false)
+    pub fn backwards_step(&self, step: StepMask) -> Option<Cursor> {
+        self.step(step, false)
     }
 
-    fn apply_step(&mut self, step: StepMask, forward: bool) {
+    fn step(&self, step: StepMask, forward: bool) -> Option<Cursor> {
         let delta = match step {
             StepMask::ALIGN => (1, 1),
             StepMask::INSERT => (0, 1),
             StepMask::DELETE => (1, 0),
-            StepMask::STOP => (0, 0),
+            StepMask::STOP => return None,
             _ => {
                 panic!("Invalid step.");
             }
         };
         if forward {
-            self.x += delta.0;
-            self.y += delta.1;
+            Some(Self {
+                x: self.x + delta.0,
+                y: self.y + delta.1,
+            })
         } else {
-            self.x -= delta.0;
-            self.y -= delta.1;
+            Some(Self {
+                x: self.x - delta.0,
+                y: self.y - delta.1,
+            })
         }
     }
 }
@@ -54,24 +58,24 @@ mod tests {
     #[test]
     fn apply_works() {
         {
-            let mut cursor = Cursor::new(10, 10);
-            cursor.apply_backwards_step(StepMask::STOP);
-            assert_eq!(cursor, Cursor::new(10, 10));
+            let cursor = Cursor::new(10, 10).backwards_step(StepMask::STOP);
+            assert_eq!(cursor, None);
         }
         {
-            let mut cursor = Cursor::new(10, 10);
-            cursor.apply_backwards_step(StepMask::ALIGN);
-            assert_eq!(cursor, Cursor::new(9, 9));
+            let cursor = Cursor::new(10, 10).backwards_step(StepMask::STOP);
+            assert_eq!(cursor, Some(Cursor::new(10, 10)));
         }
         {
-            let mut cursor = Cursor::new(10, 10);
-            cursor.apply_backwards_step(StepMask::INSERT);
-            assert_eq!(cursor, Cursor::new(10, 9));
+            let cursor = Cursor::new(10, 10).backwards_step(StepMask::ALIGN);
+            assert_eq!(cursor, Some(Cursor::new(9, 9)));
         }
         {
-            let mut cursor = Cursor::new(10, 10);
-            cursor.apply_backwards_step(StepMask::DELETE);
-            assert_eq!(cursor, Cursor::new(9, 10));
+            let cursor = Cursor::new(10, 10).backwards_step(StepMask::INSERT);
+            assert_eq!(cursor, Some(Cursor::new(10, 9)));
+        }
+        {
+            let cursor = Cursor::new(10, 10).backwards_step(StepMask::DELETE);
+            assert_eq!(cursor, Some(Cursor::new(9, 10)));
         }
     }
 }

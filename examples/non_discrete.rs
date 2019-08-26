@@ -1,10 +1,11 @@
 extern crate seal;
 
-use seal::pair::strategy::non_discrete::Strategy;
-use seal::pair::InMemoryAlignmentMatrix;
-use seal::pair::Step;
-use seal::pair::Strategy as StrategyTrait;
-use seal::pair::{Alignment, AlignmentScope, AlignmentSet};
+use seal::pair::{
+    strategy::non_discrete::{
+        global::Strategy as GlobalStrategy, local::Strategy as LocalStrategy,
+    },
+    Alignment, Alignments, Step, Strategy as StrategyTrait,
+};
 
 fn trace(_x_seq: &Vec<f64>, _y_seq: &Vec<f64>, alignment: &Alignment<f64>) {
     let mut x_vec: Vec<char> = vec![];
@@ -47,40 +48,38 @@ fn trace(_x_seq: &Vec<f64>, _y_seq: &Vec<f64>, alignment: &Alignment<f64>) {
     println!("{}", y_str);
 }
 
-fn align(label: &str, seq_x: &[f64], seq_y: &[f64], strategy: Strategy) {
+fn align<T>(label: &str, seq_x: &[f64], seq_y: &[f64], strategy: T)
+where
+    T: StrategyTrait<f64, Score = f64>,
+{
     let sequence_x: Vec<_> = seq_x.to_owned();
     let sequence_y: Vec<_> = seq_y.to_owned();
-    let alignment_set: Result<AlignmentSet<f64, InMemoryAlignmentMatrix<f64>>, _> =
-        strategy.alignment_set(&sequence_x[..], &sequence_y[..]);
+    let alignment_set: Alignments<f64> =
+        strategy.alignments(&sequence_x[..], &sequence_y[..], |x, y| (x - y).abs() - 1.0);
 
-    match alignment_set {
-        Ok(alignment_set) => {
-            println!("{:?}", alignment_set.matrix());
-            let alignment = alignment_set.alignment(AlignmentScope::Global);
-            println!("Alignment: {:#?}", alignment);
-            println!(
-                "Alignment: {:?} (score: {}, origin: {:?})",
-                label,
-                alignment.score(),
-                alignment.origin()
-            );
-            trace(&sequence_x, &sequence_y, &alignment);
-            println!("\n--------------------------\n");
-        }
-        Err(error) => {
-            println!("Failed to generate alignment set due to error:");
-            println!("{:?}", error);
-        }
+    println!("{:?}", alignment_set.matrix());
+    if let Some(alignment) = alignment_set.alignment() {
+        println!("{}:", label);
+        println!("{:#?}", alignment);
+        trace(&sequence_x, &sequence_y, &alignment);
+    } else {
+        println!("No alignment found.");
     }
 }
 
 fn main() {
-    let seq_a = vec![0.0, 1.0, 1.0, 2.0, 2.0, 3.0, 5.0];
-    let seq_b = vec![0.0, 1.0, 2.0, 3.0, 5.0, 5.0, 5.0, 6.0];
+    let seq_a = vec![0.0, 1.0, 5.0, 10.0, 10.0, 10.0, 5.0, 1.0, 0.0];
+    let seq_b = vec![0.0, 10.0, 10.0, 10.0, 0.0];
 
-    let dtw = Strategy::dynamic_time_warping();
+    let global = GlobalStrategy::default();
 
-    align("Dynamic Time Warping", &seq_a[..], &seq_b[..], dtw.clone());
+    align("Global Alignment", &seq_a[..], &seq_b[..], global);
+
+    println!("");
+
+    let local = LocalStrategy::default();
+
+    align("Local Alignment", &seq_a[..], &seq_b[..], local);
 
     println!("");
 }

@@ -21,7 +21,7 @@ impl<'a> Iterator for Steps<'a> {
     fn next(&mut self) -> Option<Step> {
         self.iter.next().and_then(|mask| {
             let cursor = self.cursor;
-            self.cursor.apply_forwards_step(*mask);
+            self.cursor = self.cursor.forwards_step(*mask)?;
             match *mask {
                 StepMask::ALIGN => Some(Step::Align {
                     x: cursor.x,

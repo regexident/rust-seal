@@ -5,25 +5,25 @@ use seal::pair::{
     Alignment, Alignments, Step, Strategy as StrategyTrait,
 };
 
-fn trace(_x_seq: &Vec<isize>, _y_seq: &Vec<isize>, alignment: &Alignment<isize>) {
+fn trace(x_seq: &Vec<char>, y_seq: &Vec<char>, alignment: &Alignment<isize>) {
     let mut x_vec: Vec<char> = vec![];
     let mut y_vec: Vec<char> = vec![];
     for step in alignment.steps() {
         match step {
-            Step::Align { x: _x, y: _y } => {
+            Step::Align { x, y } => {
                 print!("=");
-                x_vec.push('=');
-                y_vec.push('=');
+                x_vec.push(x_seq[x]);
+                y_vec.push(y_seq[y]);
             }
-            Step::Delete { x: _x } => {
+            Step::Delete { x } => {
                 print!(">");
-                x_vec.push('=');
+                x_vec.push(x_seq[x]);
                 y_vec.push('-');
             }
-            Step::Insert { y: _y } => {
+            Step::Insert { y } => {
                 print!("<");
                 x_vec.push('-');
-                y_vec.push('=');
+                y_vec.push(y_seq[y]);
             }
         }
     }
@@ -46,20 +46,19 @@ fn trace(_x_seq: &Vec<isize>, _y_seq: &Vec<isize>, alignment: &Alignment<isize>)
     println!("{}", y_str);
 }
 
-fn align<T>(label: &str, seq_x: &[isize], seq_y: &[isize], strategy: T)
+fn align<T>(label: &str, str_x: &str, str_y: &str, strategy: T)
 where
-    T: StrategyTrait<isize, Score = isize>,
+    T: StrategyTrait<char, Score = isize>,
 {
-    let sequence_x: Vec<_> = seq_x.to_owned();
-    let sequence_y: Vec<_> = seq_y.to_owned();
-    let alignment_set: Alignments<isize> =
-        strategy.alignments(&sequence_x[..], &sequence_y[..], |x, y| {
-            // if x == y {
-            //     -1
-            // } else {
-            //     1
-            // }
-            (x - y).abs() - 1
+    let sequence_x: Vec<char> = str_x.chars().collect();
+    let sequence_y: Vec<char> = str_y.chars().collect();
+    let alignment_set: Alignments<isize> = strategy
+        .alignments(&sequence_x[..], &sequence_y[..], |x, y| {
+            if x == y {
+                -1
+            } else {
+                1
+            }
         });
 
     println!("{:?}", alignment_set.matrix());
@@ -73,18 +72,21 @@ where
 }
 
 fn main() {
-    let seq_a = vec![0, 1, 5, 10, 10, 10, 5, 1, 0];
-    let seq_b = vec![0, 10, 10, 10, 0];
-
-    let global = GlobalStrategy::default();
-
-    align("Global Alignment", &seq_a[..], &seq_b[..], global);
+    let seq_a = "ABCDEFG";
+    let seq_b = "CD";
 
     println!("");
 
+    let global = GlobalStrategy::default();
+
+    println!("{}", seq_a);
+    println!("{}", seq_b);
+
+    align("Global Alignment", seq_a, seq_b, global);
+
     let local = LocalStrategy::default();
 
-    align("Local Alignment", &seq_a[..], &seq_b[..], local);
+    align("Local Alignment", seq_a, seq_b, local);
 
     println!("");
 }
