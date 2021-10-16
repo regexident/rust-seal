@@ -7,7 +7,7 @@ pub struct Iter<'a, T> where T: 'a {
     score: T,
 }
 
-impl<'a, T> Iter<'a, T> where T: 'a {
+impl<'a, T> Iter<'a, T> where T: 'a + Copy {
     pub fn new(matrix: &'a Matrix<T>, cursor: Cursor, score: T) -> Self {
         let stack = vec![(None, cursor)];
         let steps = vec![];
@@ -20,7 +20,8 @@ impl<'a, T> Iter<'a, T> where T: 'a {
     }
 
     fn branches(&self, cursor: Cursor) -> Vec<(StepMask, Cursor)> {
-        let steps = self.matrix.cell(&cursor).steps;
+        let row = self.matrix.row(cursor.y);
+        let steps = row[cursor.x].steps();
         if steps == StepMask::STOP {
             return vec![];
         }
@@ -34,7 +35,7 @@ impl<'a, T> Iter<'a, T> where T: 'a {
     }
 }
 
-impl<'a, T> Iterator for Iter<'a, T> where T: 'a + Clone {
+impl<'a, T> Iterator for Iter<'a, T> where T: 'a + Copy {
     type Item = Alignment<T>;
 
     fn next(&mut self) -> Option<Alignment<T>> {
@@ -61,7 +62,7 @@ impl<'a, T> Iterator for Iter<'a, T> where T: 'a + Clone {
         start_cursor.map(|cursor| {
             let mut steps = self.steps.to_owned();
             steps.reverse();
-            Alignment::new(cursor, steps, self.score.clone())
+            Alignment::new(cursor, steps, self.score)
         })
     }
 }

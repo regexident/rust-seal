@@ -20,13 +20,13 @@ impl<'a> Iterator for Runs<'a> {
 
     fn next(&mut self) -> Option<Run> {
         let inner = &mut self.inner;
-        let run = inner.peek().and_then(|step| Some(step.to_run()));
-        run.and_then(|mut run| {
+        let run = inner.peek().map(|step| step.to_run());
+        run.map(|mut run| {
             let mask = run.mask();
             let mut peekable = inner.peekable();
             let mut cautious_take_while = || {
                 let is_match = match peekable.peek() {
-                    Some(ref step) => step.mask() == mask,
+                    Some(step) => step.mask() == mask,
                     None => false,
                 };
                 if is_match {
@@ -56,7 +56,7 @@ impl<'a> Iterator for Runs<'a> {
                     _ => unreachable!(),
                 }
             }
-            Some(run)
+            run
         })
     }
 }

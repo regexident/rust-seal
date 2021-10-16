@@ -5,7 +5,7 @@ use seal::pair::{
     Alignment, Alignments, Step, Strategy as StrategyTrait,
 };
 
-fn trace(x_seq: &Vec<char>, y_seq: &Vec<char>, alignment: &Alignment<isize>) {
+fn trace(x_seq: &[char], y_seq: &[char], alignment: &Alignment<isize>) {
     let mut x_vec: Vec<char> = vec![];
     let mut y_vec: Vec<char> = vec![];
     for step in alignment.steps() {
@@ -28,7 +28,7 @@ fn trace(x_seq: &Vec<char>, y_seq: &Vec<char>, alignment: &Alignment<isize>) {
         }
     }
 
-    print!("\n");
+    println!();
 
     let x_str: String = x_vec.into_iter().collect();
     let y_str: String = y_vec.into_iter().collect();
@@ -40,7 +40,7 @@ fn trace(x_seq: &Vec<char>, y_seq: &Vec<char>, alignment: &Alignment<isize>) {
             print!("|");
         }
     }
-    print!("\n");
+    println!();
 
     println!("{}", x_str);
     println!("{}", y_str);
@@ -52,8 +52,8 @@ where
 {
     let sequence_x: Vec<char> = str_x.chars().collect();
     let sequence_y: Vec<char> = str_y.chars().collect();
-    let alignment_set: Alignments<isize> = strategy
-        .alignments(&sequence_x[..], &sequence_y[..], |x, y| {
+    let alignments: Alignments<isize> =
+        strategy.alignments(&sequence_x[..], &sequence_y[..], |x, y| {
             if x == y {
                 -1
             } else {
@@ -61,8 +61,8 @@ where
             }
         });
 
-    println!("{:?}", alignment_set.matrix());
-    if let Some(alignment) = alignment_set.alignment() {
+    println!("{:?}", alignments.matrix());
+    if let Some(alignment) = alignments.alignment() {
         println!("{}:", label);
         println!("{:#?}", alignment);
         trace(&sequence_x, &sequence_y, &alignment);
@@ -75,7 +75,7 @@ fn main() {
     let seq_a = "ABCDEFG";
     let seq_b = "CD";
 
-    println!("");
+    println!();
 
     let global = GlobalStrategy::default();
 
@@ -88,5 +88,5 @@ fn main() {
 
     align("Local Alignment", seq_a, seq_b, local);
 
-    println!("");
+    println!();
 }

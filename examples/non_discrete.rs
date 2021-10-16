@@ -7,7 +7,7 @@ use seal::pair::{
     Alignment, Alignments, Step, Strategy as StrategyTrait,
 };
 
-fn trace(_x_seq: &Vec<f64>, _y_seq: &Vec<f64>, alignment: &Alignment<f64>) {
+fn trace(_x_seq: &[f64], _y_seq: &[f64], alignment: &Alignment<f64>) {
     let mut x_vec: Vec<char> = vec![];
     let mut y_vec: Vec<char> = vec![];
     for step in alignment.steps() {
@@ -30,7 +30,7 @@ fn trace(_x_seq: &Vec<f64>, _y_seq: &Vec<f64>, alignment: &Alignment<f64>) {
         }
     }
 
-    print!("\n");
+    println!();
 
     let x_str: String = x_vec.into_iter().collect();
     let y_str: String = y_vec.into_iter().collect();
@@ -42,7 +42,7 @@ fn trace(_x_seq: &Vec<f64>, _y_seq: &Vec<f64>, alignment: &Alignment<f64>) {
             print!("|");
         }
     }
-    print!("\n");
+    println!();
 
     println!("{}", x_str);
     println!("{}", y_str);
@@ -54,11 +54,11 @@ where
 {
     let sequence_x: Vec<_> = seq_x.to_owned();
     let sequence_y: Vec<_> = seq_y.to_owned();
-    let alignment_set: Alignments<f64> =
+    let alignments: Alignments<f64> =
         strategy.alignments(&sequence_x[..], &sequence_y[..], |x, y| (x - y).abs() - 1.0);
 
-    println!("{:?}", alignment_set.matrix());
-    if let Some(alignment) = alignment_set.alignment() {
+    println!("{:?}", alignments.matrix());
+    if let Some(alignment) = alignments.alignment() {
         println!("{}:", label);
         println!("{:#?}", alignment);
         trace(&sequence_x, &sequence_y, &alignment);
@@ -75,11 +75,11 @@ fn main() {
 
     align("Global Alignment", &seq_a[..], &seq_b[..], global);
 
-    println!("");
+    println!();
 
     let local = LocalStrategy::default();
 
     align("Local Alignment", &seq_a[..], &seq_b[..], local);
 
-    println!("");
+    println!();
 }

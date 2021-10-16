@@ -89,17 +89,17 @@ An `AlignmentSet` contains all optimal alignments for a given pair of sequences.
 ### Retrieving a single locally/globally optimal alignment:
 
 ```rust
-let alignment in alignment_set.local_alignment();
-let alignment in alignment_set.global_alignment();
+let alignment in alignments.local_alignment();
+let alignment in alignments.global_alignment();
 ```
 
 ### Enumerate all locally/globally optimal alignments:
 
 ```rust
-for alignment in alignment_set.local_alignments() {
+for alignment in alignments.local_alignments() {
 	// …
 }
-for alignment in alignment_set.global_alignments() {
+for alignment in alignments.global_alignments() {
 	// …
 }
 ```

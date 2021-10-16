@@ -10,7 +10,10 @@ pub struct Alignment<T> {
     score: T,
 }
 
-impl<T> Alignment<T> where T: Clone {
+impl<T> Alignment<T>
+where
+    T: Clone,
+{
     pub fn new(origin: Cursor, steps: Vec<StepMask>, score: T) -> Self {
         Self {
             origin,
@@ -39,7 +42,7 @@ impl<T> Alignment<T> where T: Clone {
         Steps::new(self.steps.iter(), self.origin)
     }
 
-    pub fn runs<'a>(&'a self) -> Runs<'a> {
+    pub fn runs(&self) -> Runs<'_> {
         Runs::new(self.steps().peekable())
     }
 }

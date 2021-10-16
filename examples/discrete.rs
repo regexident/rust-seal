@@ -5,7 +5,7 @@ use seal::pair::{
     Alignment, Alignments, Step, Strategy as StrategyTrait,
 };
 
-fn trace(_x_seq: &Vec<isize>, _y_seq: &Vec<isize>, alignment: &Alignment<isize>) {
+fn trace(_x: &[isize], _y: &[isize], alignment: &Alignment<isize>) {
     let mut x_vec: Vec<char> = vec![];
     let mut y_vec: Vec<char> = vec![];
     for step in alignment.steps() {
@@ -28,7 +28,7 @@ fn trace(_x_seq: &Vec<isize>, _y_seq: &Vec<isize>, alignment: &Alignment<isize>)
         }
     }
 
-    print!("\n");
+    println!();
 
     let x_str: String = x_vec.into_iter().collect();
     let y_str: String = y_vec.into_iter().collect();
@@ -40,33 +40,29 @@ fn trace(_x_seq: &Vec<isize>, _y_seq: &Vec<isize>, alignment: &Alignment<isize>)
             print!("|");
         }
     }
-    print!("\n");
+    println!();
 
     println!("{}", x_str);
     println!("{}", y_str);
 }
 
-fn align<T>(label: &str, seq_x: &[isize], seq_y: &[isize], strategy: T)
+fn align<T>(label: &str, x: &[isize], y: &[isize], strategy: T)
 where
     T: StrategyTrait<isize, Score = isize>,
 {
-    let sequence_x: Vec<_> = seq_x.to_owned();
-    let sequence_y: Vec<_> = seq_y.to_owned();
-    let alignment_set: Alignments<isize> =
-        strategy.alignments(&sequence_x[..], &sequence_y[..], |x, y| {
-            // if x == y {
-            //     -1
-            // } else {
-            //     1
-            // }
-            (x - y).abs() - 1
-        });
+    fn cost_fn(x: &isize, y: &isize) -> isize {
+        (x - y).abs() - 1
+    }
 
-    println!("{:?}", alignment_set.matrix());
-    if let Some(alignment) = alignment_set.alignment() {
+    let alignments: Alignments<isize> = strategy.alignments(x, y, cost_fn);
+    let distance = strategy.distance(x, y, cost_fn);
+
+    println!("{:?}", alignments.matrix());
+    if let Some(alignment) = alignments.alignment() {
         println!("{}:", label);
         println!("{:#?}", alignment);
-        trace(&sequence_x, &sequence_y, &alignment);
+        println!("{:#?}", distance);
+        trace(x, y, &alignment);
     } else {
         println!("No alignment found.");
     }
@@ -80,11 +76,11 @@ fn main() {
 
     align("Global Alignment", &seq_a[..], &seq_b[..], global);
 
-    println!("");
+    println!();
 
     let local = LocalStrategy::default();
 
     align("Local Alignment", &seq_a[..], &seq_b[..], local);
 
-    println!("");
+    println!();
 }

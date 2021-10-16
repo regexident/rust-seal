@@ -1,5 +1,5 @@
-use pair::matrix::Matrix;
 use pair::cursor::Cursor;
+use pair::matrix::Matrix;
 
 mod alignment;
 mod iter;
@@ -14,12 +14,18 @@ pub enum AlignmentScope {
 }
 
 #[derive(Debug)]
-pub struct Alignments<T> {
+pub struct Alignments<T>
+where
+    T: Copy,
+{
     matrix: Matrix<T>,
     cursor: Cursor,
 }
 
-impl<T> Alignments<T> where T: Clone {
+impl<T> Alignments<T>
+where
+    T: Copy,
+{
     pub fn new(matrix: Matrix<T>, cursor: Cursor) -> Self {
         Self { matrix, cursor }
     }
@@ -28,15 +34,16 @@ impl<T> Alignments<T> where T: Clone {
         &self.matrix
     }
 
-    pub fn score(&self) -> &T {
-        &self.matrix.cell(&self.cursor).score
+    pub fn score(&self) -> T {
+        let Cursor { x, y } = self.cursor;
+        self.matrix.row(y)[x].score()
     }
 
     pub fn alignment(&self) -> Option<Alignment<T>> {
         self.iter().next()
     }
 
-    pub fn iter<'a>(&'a self) -> Iter<'a, T> {
-        Iter::new(&self.matrix, self.cursor, self.score().clone())
+    pub fn iter(&self) -> Iter<'_, T> {
+        Iter::new(&self.matrix, self.cursor, self.score())
     }
 }

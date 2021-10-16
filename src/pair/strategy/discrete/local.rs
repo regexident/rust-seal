@@ -50,7 +50,7 @@ impl_default!(isize);
 
 impl<T, U> StrategyTrait<U> for Strategy<T>
 where
-    T: NumAssign + Signed + PartialOrd + Clone,
+    T: NumAssign + Signed + PartialOrd + Copy,
     U: PartialEq,
 {
     type Score = T;
@@ -68,7 +68,7 @@ where
     }
 
     fn boundary_score(&self, _prev_score: Self::Score) -> Self::Score {
-        self.bounds.end().clone()
+        *self.bounds.end()
     }
 
     fn pick_optimum(
