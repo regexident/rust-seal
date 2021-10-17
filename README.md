@@ -1,9 +1,8 @@
 # seal
 
-[![Build Status](http://img.shields.io/travis/regexident/rust-seal.svg?style=flat-square)](https://travis-ci.org/regexident/rust-seal)
-[![Downloads](https://img.shields.io/crates/d/rust-seal.svg?style=flat-square)](https://crates.io/crates/rust-seal/)
-[![Version](https://img.shields.io/crates/v/rust-seal.svg?style=flat-square)](https://crates.io/crates/rust-seal/)
-[![License](https://img.shields.io/crates/l/rust-seal.svg?style=flat-square)](https://crates.io/crates/rust-seal/)
+[![Downloads](https://img.shields.io/crates/d/seal.svg?style=flat-square)](https://crates.io/crates/seal/)
+[![Version](https://img.shields.io/crates/v/seal.svg?style=flat-square)](https://crates.io/crates/seal/)
+[![License](https://img.shields.io/crates/l/seal.svg?style=flat-square)](https://crates.io/crates/seal/)
 
 ## Synopsis
 
