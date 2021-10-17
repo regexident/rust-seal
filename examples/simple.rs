@@ -9,7 +9,7 @@ use seal::pair::Step;
 use seal::pair::{Alignment, AlignmentSet};
 use seal::pair::{NeedlemanWunsch, SmithWaterman, Strategy};
 
-fn trace(x_seq: &Vec<char>, y_seq: &Vec<char>, alignment: &Alignment) {
+fn trace(x_seq: &[char], y_seq: &[char], alignment: &Alignment) {
     let mut x_vec: Vec<char> = vec![];
     let mut y_vec: Vec<char> = vec![];
     for step in alignment.steps() {
@@ -32,7 +32,7 @@ fn trace(x_seq: &Vec<char>, y_seq: &Vec<char>, alignment: &Alignment) {
         }
     }
 
-    print!("\n");
+    println!();
 
     let x_str: String = x_vec.into_iter().collect();
     let y_str: String = y_vec.into_iter().collect();
@@ -44,7 +44,7 @@ fn trace(x_seq: &Vec<char>, y_seq: &Vec<char>, alignment: &Alignment) {
             print!("|");
         }
     }
-    print!("\n");
+    println!();
 
     println!("{}", x_str);
     println!("{}", y_str);
@@ -66,7 +66,7 @@ where
             let local_alignment = alignment_set.local_alignment();
             println!("Local alignment:");
             trace(&sequence_x, &sequence_y, &local_alignment);
-            println!("");
+            println!();
             let global_alignment = alignment_set.global_alignment();
             println!("Global alignment:");
             trace(&sequence_x, &sequence_y, &global_alignment);
@@ -152,19 +152,19 @@ fn main() {
     let seq_a = mouse;
     let seq_b = rat;
 
-    println!("");
+    println!();
 
     let needleman_wunsch = NeedlemanWunsch::new(1, -1, -1, -1);
 
     align(seq_a, seq_b, needleman_wunsch.clone());
-    println!("");
-    align(seq_b, seq_a, needleman_wunsch.clone());
+    println!();
+    align(seq_b, seq_a, needleman_wunsch);
 
     let smith_waterman = SmithWaterman::new(2, -1, -1, -1);
 
     align(seq_a, seq_b, smith_waterman.clone());
-    println!("");
-    align(seq_b, seq_a, smith_waterman.clone());
+    println!();
+    align(seq_b, seq_a, smith_waterman);
 
-    println!("");
+    println!();
 }

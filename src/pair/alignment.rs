@@ -13,9 +13,9 @@ pub struct Alignment {
 impl Alignment {
     pub fn new(origin: Cursor, steps: Vec<StepMask>, score: isize) -> Alignment {
         Alignment {
-            origin: origin,
-            steps: steps,
-            score: score,
+            origin,
+            steps,
+            score,
         }
     }
 
@@ -31,11 +31,15 @@ impl Alignment {
         self.steps.len()
     }
 
-    pub fn steps<'a>(&'a self) -> Steps {
-        Steps::new(self.steps.iter(), self.origin.clone())
+    pub fn is_empty(&self) -> bool {
+        self.steps.is_empty()
     }
 
-    pub fn runs<'a>(&'a self) -> Runs<'a> {
+    pub fn steps(&self) -> Steps {
+        Steps::new(self.steps.iter(), self.origin)
+    }
+
+    pub fn runs(&self) -> Runs<'_> {
         Runs::new(self.steps().peekable())
     }
 }

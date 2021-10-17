@@ -14,10 +14,10 @@ pub struct SmithWaterman {
 impl SmithWaterman {
     pub fn new(equal: isize, align: isize, insert: isize, delete: isize) -> SmithWaterman {
         SmithWaterman {
-            equal: equal,
-            align: align,
-            insert: insert,
-            delete: delete,
+            equal,
+            align,
+            insert,
+            delete,
         }
     }
 }
