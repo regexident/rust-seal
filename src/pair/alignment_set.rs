@@ -62,10 +62,7 @@ where
                 let equal = f(x, y);
                 let (steps, score) = Self::calculate_cell(&strategy, previous, equal);
                 let cursor = Cursor { x: x + 1, y: y + 1 };
-                highscores.update(Highscore {
-                    cursor: cursor,
-                    score: score,
-                });
+                highscores.update(Highscore { cursor, score });
                 matrix.set_at(&cursor, steps);
                 let old_diagonal = row[x + 1];
                 row[x + 1] = score;
@@ -73,10 +70,7 @@ where
             }
         }
 
-        Ok(AlignmentSet {
-            matrix: matrix,
-            highscores: highscores,
-        })
+        Ok(AlignmentSet { matrix, highscores })
     }
 
     fn calculate_cell<S: Strategy>(
@@ -99,11 +93,11 @@ where
 
     fn prepare_matrix(matrix: &mut T) {
         for y in 1..matrix.height() {
-            let cursor = Cursor { x: 0, y: y };
+            let cursor = Cursor { x: 0, y };
             matrix.set_at(&cursor, StepMask::INSERT);
         }
         for x in 1..matrix.width() {
-            let cursor = Cursor { x: x, y: 0 };
+            let cursor = Cursor { x, y: 0 };
             matrix.set_at(&cursor, StepMask::DELETE);
         }
     }
@@ -151,13 +145,13 @@ where
         self.global_alignments().next().unwrap()
     }
 
-    pub fn local_alignments<'a>(&'a self) -> Alignments<'a, T> {
-        let stack = vec![(StepMask::STOP, self.highscores.local.cursor.clone(), 0)];
+    pub fn local_alignments(&self) -> Alignments<'_, T> {
+        let stack = vec![(StepMask::STOP, self.highscores.local.cursor, 0)];
         Alignments::new(&self.matrix, stack, vec![], self.highscores.local.score)
     }
 
-    pub fn global_alignments<'a>(&'a self) -> Alignments<'a, T> {
-        let stack = vec![(StepMask::STOP, self.highscores.global.cursor.clone(), 0)];
+    pub fn global_alignments(&self) -> Alignments<'_, T> {
+        let stack = vec![(StepMask::STOP, self.highscores.global.cursor, 0)];
         Alignments::new(&self.matrix, stack, vec![], self.highscores.global.score)
     }
 

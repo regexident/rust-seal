@@ -11,10 +11,10 @@ pub enum Run {
 
 impl Run {
     pub fn mask(&self) -> StepMask {
-        match self {
-            &Run::Align { x: _, y: _ } => StepMask::ALIGN,
-            &Run::Delete { x: _ } => StepMask::DELETE,
-            &Run::Insert { y: _ } => StepMask::INSERT,
+        match *self {
+            Run::Align { x: _, y: _ } => StepMask::ALIGN,
+            Run::Delete { x: _ } => StepMask::DELETE,
+            Run::Insert { y: _ } => StepMask::INSERT,
         }
     }
 }

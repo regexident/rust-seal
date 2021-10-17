@@ -10,11 +10,8 @@ pub struct Steps<'a> {
 }
 
 impl<'a> Steps<'a> {
-    pub fn new(iter: Iter<'a, StepMask>, cursor: Cursor) -> Steps {
-        Steps {
-            inner: iter,
-            cursor: cursor,
-        }
+    pub fn new(inner: Iter<'a, StepMask>, cursor: Cursor) -> Steps {
+        Steps { inner, cursor }
     }
 }
 
@@ -25,13 +22,13 @@ impl<'a> Iterator for Steps<'a> {
         self.inner.next().and_then(|mask| {
             let cursor = self.cursor;
             self.cursor.apply_forwards_step(*mask);
-            match mask {
-                &StepMask::ALIGN => Some(Step::Align {
+            match *mask {
+                StepMask::ALIGN => Some(Step::Align {
                     x: cursor.x,
                     y: cursor.y,
                 }),
-                &StepMask::DELETE => Some(Step::Delete { x: cursor.x }),
-                &StepMask::INSERT => Some(Step::Insert { y: cursor.y }),
+                StepMask::DELETE => Some(Step::Delete { x: cursor.x }),
+                StepMask::INSERT => Some(Step::Insert { y: cursor.y }),
                 _ => None,
             }
         })

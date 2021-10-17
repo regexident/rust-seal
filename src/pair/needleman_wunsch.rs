@@ -12,10 +12,10 @@ pub struct NeedlemanWunsch {
 impl NeedlemanWunsch {
     pub fn new(equal: isize, align: isize, insert: isize, delete: isize) -> NeedlemanWunsch {
         NeedlemanWunsch {
-            equal: equal,
-            align: align,
-            insert: insert,
-            delete: delete,
+            equal,
+            align,
+            insert,
+            delete,
         }
     }
 }
