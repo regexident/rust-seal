@@ -27,12 +27,14 @@ extern crate seal;
 
 Once that's done you're ready to play!
 
-# Example
+## Example
 
 ```rust
 extern crate seal;
 
-use seal::pair::{SmithWaterman, NeedlemanWunsch, AlignmentSet, Alignment, MemoryBacking, Step};
+use seal::pair::{
+    Alignment, AlignmentSet, InMemoryAlignmentMatrix, NeedlemanWunsch, SmithWaterman, Step,
+};
 
 fn main() {
     let str_x = "The quick brown fox jumps over the lazy dog.";
@@ -44,18 +46,22 @@ fn main() {
 
     let sequence_x: Vec<char> = str_x.chars().collect();
     let sequence_y: Vec<char> = str_y.chars().collect();
-    let set = AlignmentSet::new(sequence_x.len(),
-                                sequence_y.len(),
-                                strategy,
-                                MemoryBacking::MemoryBacked,
-                                |x, y| sequence_x[x] == sequence_y[y]);
+    let set: AlignmentSet<InMemoryAlignmentMatrix> =
+        AlignmentSet::new(sequence_x.len(), sequence_y.len(), strategy, |x, y| {
+            sequence_x[x] == sequence_y[y]
+        })
+        .unwrap();
 
     let print_alignment = |alignment: Alignment| {
         for step in alignment.steps() {
             match step {
                 Step::Align { x, y } => {
-                    if sequence_x[x] == sequence_y[y] { print!("=") } else { print!("!") }
-                },
+                    if sequence_x[x] == sequence_y[y] {
+                        print!("=")
+                    } else {
+                        print!("!")
+                    }
+                }
                 Step::Delete { .. } => print!("-"),
                 Step::Insert { .. } => print!("+"),
             }
@@ -85,21 +91,21 @@ See the [examples directory](examples) for more in-depth examples.
 
 An `AlignmentSet` contains all optimal alignments for a given pair of sequences.
 
-### Retrieving a single locally/globally optimal alignment:
+### Retrieving a single locally/globally optimal alignment
 
 ```rust
 let alignment in alignment_set.local_alignment();
 let alignment in alignment_set.global_alignment();
 ```
 
-### Enumerate all locally/globally optimal alignments:
+### Enumerate all locally/globally optimal alignments
 
 ```rust
 for alignment in alignment_set.local_alignments() {
-	// …
+    // …
 }
 for alignment in alignment_set.global_alignments() {
-	// …
+    // …
 }
 ```
 
@@ -107,16 +113,6 @@ for alignment in alignment_set.global_alignments() {
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our [code of conduct](https://www.rust-lang.org/conduct.html),
 and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/regexident/rust-seal/tags).
-
-## Authors
-
-* **Vincent Esche** – *Initial work* – [Regexident](https://github.com/Regexident)
-
-See also the list of [contributors](https://github.com/regexident/rust-seal/contributors) who participated in this project.
 
 ## License
 
