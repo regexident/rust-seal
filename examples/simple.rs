@@ -4,10 +4,10 @@ extern crate seal;
 
 use std::fmt::Debug;
 
-use seal::pair::InMemoryAlignmentMatrix;
-use seal::pair::Step;
-use seal::pair::{Alignment, AlignmentSet};
-use seal::pair::{NeedlemanWunsch, SmithWaterman, Strategy};
+use seal::pair::{
+    Alignment, AlignmentSet, InMemoryAlignmentMatrix, NeedlemanWunsch, SmithWaterman, Step,
+    Strategy,
+};
 
 fn trace(x_seq: &[char], y_seq: &[char], alignment: &Alignment) {
     let mut x_vec: Vec<char> = vec![];
