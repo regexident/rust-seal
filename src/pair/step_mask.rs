@@ -1,6 +1,8 @@
 #![allow(dead_code)]
 use std::cmp;
 
+use bitflags::bitflags;
+
 bitflags! {
     pub struct StepMask: u8 {
         const STOP   = 0b00000000;

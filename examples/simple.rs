@@ -1,7 +1,5 @@
 // #![allow(dead_code, unused_variables, unused_imports)]
 
-extern crate seal;
-
 use std::fmt::Debug;
 
 use seal::pair::{

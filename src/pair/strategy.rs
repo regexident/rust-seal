@@ -1,4 +1,4 @@
-use pair::StepMask;
+use crate::pair::StepMask;
 
 pub trait Strategy: Clone {
     fn match_score(&self) -> isize;

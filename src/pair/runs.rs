@@ -1,9 +1,8 @@
 use std::iter::Peekable;
 
-use pair::run::Run;
-use pair::step::Step;
-
-use pair::steps::Steps;
+use crate::pair::run::Run;
+use crate::pair::step::Step;
+use crate::pair::steps::Steps;
 
 pub struct Runs<'a> {
     inner: Peekable<Steps<'a>>,

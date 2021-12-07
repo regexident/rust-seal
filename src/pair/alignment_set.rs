@@ -1,11 +1,11 @@
 use std::cmp;
 
-use pair::alignment::Alignment;
-use pair::alignment_matrix::AlignmentMatrix;
-use pair::alignments::Alignments;
-use pair::cursor::Cursor;
-use pair::step_mask::StepMask;
-use pair::strategy::Strategy;
+use crate::pair::alignment::Alignment;
+use crate::pair::alignment_matrix::AlignmentMatrix;
+use crate::pair::alignments::Alignments;
+use crate::pair::cursor::Cursor;
+use crate::pair::step_mask::StepMask;
+use crate::pair::strategy::Strategy;
 
 #[derive(Copy, Clone)]
 struct Highscore {

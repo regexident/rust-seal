@@ -1,8 +1,8 @@
 use std::slice::Iter;
 
-use pair::cursor::Cursor;
-use pair::step::Step;
-use pair::step_mask::StepMask;
+use crate::pair::cursor::Cursor;
+use crate::pair::step::Step;
+use crate::pair::step_mask::StepMask;
 
 pub struct Steps<'a> {
     pub inner: Iter<'a, StepMask>,

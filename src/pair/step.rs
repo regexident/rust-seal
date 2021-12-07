@@ -1,5 +1,5 @@
-use pair::run::Run;
-use pair::step_mask::StepMask;
+use crate::pair::run::Run;
+use crate::pair::step_mask::StepMask;
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Step {

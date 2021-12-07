@@ -1,4 +1,4 @@
-use pair::step_mask::StepMask;
+use crate::pair::step_mask::StepMask;
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Cursor {

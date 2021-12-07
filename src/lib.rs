@@ -1,11 +1,5 @@
 // pub mod basic_scoring;
 
-#[macro_use]
-extern crate bitflags;
-extern crate memmap2;
-extern crate tempfile;
-extern crate uuid;
-
 pub mod pair;
 
 #[test]

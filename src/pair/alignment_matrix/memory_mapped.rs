@@ -4,8 +4,8 @@ use memmap2::MmapMut;
 use tempfile::tempdir;
 use uuid::Uuid;
 
-use pair::cursor::Cursor;
-use pair::step_mask::StepMask;
+use crate::pair::cursor::Cursor;
+use crate::pair::step_mask::StepMask;
 
 use super::AlignmentMatrix as AlignmentMatrixTrait;
 
