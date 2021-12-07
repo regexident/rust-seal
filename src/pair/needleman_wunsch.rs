@@ -1,5 +1,5 @@
-use pair::step_mask::StepMask;
-use pair::strategy::Strategy;
+use crate::pair::step_mask::StepMask;
+use crate::pair::strategy::Strategy;
 
 #[derive(Clone, Debug)]
 pub struct NeedlemanWunsch {

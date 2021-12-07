@@ -1,7 +1,7 @@
-use pair::cursor::Cursor;
-use pair::runs::Runs;
-use pair::step_mask::StepMask;
-use pair::steps::Steps;
+use crate::pair::cursor::Cursor;
+use crate::pair::runs::Runs;
+use crate::pair::step_mask::StepMask;
+use crate::pair::steps::Steps;
 
 #[derive(Debug)]
 pub struct Alignment {
@@ -47,8 +47,8 @@ impl Alignment {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use pair::cursor::Cursor;
-    use pair::step_mask::StepMask;
+    use crate::pair::cursor::Cursor;
+    use crate::pair::step_mask::StepMask;
 
     fn origin() -> Cursor {
         Cursor { x: 3, y: 3 }

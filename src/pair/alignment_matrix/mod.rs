@@ -1,4 +1,4 @@
-use pair::{cursor::Cursor, step_mask::StepMask};
+use crate::pair::{cursor::Cursor, step_mask::StepMask};
 
 pub mod in_memory;
 pub mod memory_mapped;

@@ -1,6 +1,6 @@
 use std::ops::Range;
 
-use pair::step_mask::StepMask;
+use crate::pair::step_mask::StepMask;
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Run {

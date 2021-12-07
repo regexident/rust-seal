@@ -1,7 +1,7 @@
-use pair::alignment::Alignment;
-use pair::alignment_matrix::AlignmentMatrix;
-use pair::cursor::Cursor;
-use pair::step_mask::StepMask;
+use crate::pair::alignment::Alignment;
+use crate::pair::alignment_matrix::AlignmentMatrix;
+use crate::pair::cursor::Cursor;
+use crate::pair::step_mask::StepMask;
 
 pub struct Alignments<'a, T: 'a> {
     matrix: &'a T,
