@@ -2,9 +2,9 @@
 
 #[macro_use]
 extern crate bitflags;
-extern crate tempdir;
+extern crate memmap2;
+extern crate tempfile;
 extern crate uuid;
-extern crate memmap;
 
 pub mod pair;
 

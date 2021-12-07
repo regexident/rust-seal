@@ -1,7 +1,7 @@
 use std::{fmt, fs, io, mem};
 
-use memmap::MmapMut;
-use tempdir::TempDir;
+use memmap2::MmapMut;
+use tempfile::tempdir;
 use uuid::Uuid;
 
 use pair::cursor::Cursor;
@@ -25,10 +25,11 @@ impl AlignmentMatrixTrait for AlignmentMatrix {
     type Error = io::Error;
 
     fn new(width: usize, height: usize) -> Result<Self, Self::Error> {
-        let directory = TempDir::new("seal").unwrap();
+        let tempdir = tempdir()?;
+        let directory = tempdir.path().join("seal");
         let uuid = Uuid::new_v4();
         let filename = uuid.to_simple().to_string();
-        let path = directory.path().join(filename);
+        let path = directory.join(filename);
         let file = fs::OpenOptions::new()
             .read(true)
             .write(true)
