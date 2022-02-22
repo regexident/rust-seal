@@ -26,7 +26,7 @@ impl AlignmentMatrixTrait for AlignmentMatrix {
 
     fn new(width: usize, height: usize) -> Result<Self, Self::Error> {
         let tempdir = tempdir()?;
-        let directory = tempdir.path().join("seal");
+        let directory = tempdir.path();
         let uuid = Uuid::new_v4();
         let filename = uuid.to_simple().to_string();
         let path = directory.join(filename);
