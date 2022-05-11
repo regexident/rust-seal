@@ -28,7 +28,7 @@ impl AlignmentMatrixTrait for AlignmentMatrix {
         let tempdir = tempdir()?;
         let directory = tempdir.path();
         let uuid = Uuid::new_v4();
-        let filename = uuid.to_simple().to_string();
+        let filename = uuid.as_simple().to_string();
         let path = directory.join(filename);
         let file = fs::OpenOptions::new()
             .read(true)
