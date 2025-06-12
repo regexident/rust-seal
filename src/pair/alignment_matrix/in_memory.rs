@@ -1,4 +1,4 @@
-use std::fmt;
+use std::{fmt, mem::MaybeUninit};
 
 use crate::pair::cursor::Cursor;
 use crate::pair::step_mask::StepMask;
@@ -8,7 +8,7 @@ use super::AlignmentMatrix as AlignmentMatrixTrait;
 pub struct AlignmentMatrix {
     width: usize,
     height: usize,
-    buffer: Vec<StepMask>,
+    buffer: Vec<MaybeUninit<StepMask>>,
 }
 
 impl AlignmentMatrix {
@@ -22,7 +22,7 @@ impl AlignmentMatrixTrait for AlignmentMatrix {
     type Error = ();
 
     fn new(width: usize, height: usize) -> Result<Self, Self::Error> {
-        let buffer = Vec::with_capacity(width * height);
+        let buffer = vec![MaybeUninit::uninit(); width * height];
         Ok(Self {
             width,
             height,
@@ -40,13 +40,14 @@ impl AlignmentMatrixTrait for AlignmentMatrix {
 
     fn at(&self, cursor: &Cursor) -> StepMask {
         let offset = self.offset(cursor);
-        unsafe { *self.buffer.get_unchecked(offset) }
+        // Safety: Assumes `set_at` was called for this cursor, initializing the value.
+        unsafe { self.buffer[offset].assume_init_read() }
     }
 
     fn set_at(&mut self, cursor: &Cursor, step_mask: StepMask) {
         let offset = self.offset(cursor);
-        let byte_ref = unsafe { self.buffer.get_unchecked_mut(offset) };
-        *byte_ref = step_mask;
+        // This is safe because we are writing to a `MaybeUninit` slot.
+        self.buffer[offset] = MaybeUninit::new(step_mask);
     }
 }
 
