@@ -15,7 +15,7 @@ license = "MPL-2.0"
 name = "seal"
 readme = "README.md"
 repository = "https://github.com/regexident/rust-seal"
-version = "0.1.5"
+version = "0.1.6"
 edition = "2021"
 
 [dependencies]
