@@ -9,7 +9,7 @@ pub struct Runs<'a> {
 }
 
 impl<'a> Runs<'a> {
-    pub fn new(inner: Peekable<Steps<'a>>) -> Runs {
+    pub fn new(inner: Peekable<Steps<'a>>) -> Self {
         Runs { inner }
     }
 }

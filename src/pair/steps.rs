@@ -10,7 +10,7 @@ pub struct Steps<'a> {
 }
 
 impl<'a> Steps<'a> {
-    pub fn new(inner: Iter<'a, StepMask>, cursor: Cursor) -> Steps {
+    pub fn new(inner: Iter<'a, StepMask>, cursor: Cursor) -> Self {
         Steps { inner, cursor }
     }
 }

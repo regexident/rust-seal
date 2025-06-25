@@ -34,6 +34,7 @@ impl AlignmentMatrixTrait for AlignmentMatrix {
             .read(true)
             .write(true)
             .create(true)
+            .truncate(true)
             .open(&path)?;
         let size = (width + 1) * (height + 1);
         file.set_len(size as u64)?;
